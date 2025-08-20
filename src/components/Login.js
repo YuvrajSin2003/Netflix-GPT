@@ -5,16 +5,15 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-} from "firebase/auth"; // for authentication of password
+} from "firebase/auth";
 import { auth } from "./utils/firebase";
-import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "./utils/userSlice";
+import { user_img } from "./utils/constant";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
@@ -28,8 +27,8 @@ const Login = () => {
     setErrorMessage(message);
     if (message) return;
 
-    //signin Up Logic
-    if (!isSignIn) {
+    // Sign Up Logic
+    if (!isSignIn) { 
       createUserWithEmailAndPassword(
         auth,
         email.current.value,
@@ -38,27 +37,29 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           updateProfile(user, {
-            displayName: name.current.value, // Fixed: was name.curent.value
-            photoURL: "https://example.com/jane-q-user/profile.jpg",
+            displayName: name.current.value,
+            photoURL: user_img, // Fixed: was 'user', now uses user_img constant
           })
             .then(() => {
-               const { uid, email, displayName } = auth.currentUser;
-                      dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
-              navigate("/browser");
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(addUser({ 
+                uid: uid, 
+                email: email, 
+                displayName: displayName,
+                photoURL: photoURL // Added photoURL to Redux store
+              }));
             })
             .catch((error) => {
               setErrorMessage(error.message);
             });
-          navigate("/browser");
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           setErrorMessage(errorCode + "-" + errorMessage);
-          // ..
         });
     } else {
-      //Sign In
+      // Sign In
       signInWithEmailAndPassword(
         auth,
         email.current.value,
@@ -66,8 +67,13 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
-          navigate("/browser");
+          // Dispatch user data to Redux store on sign in
+          dispatch(addUser({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL || user_img // Use existing photoURL or fallback to user_img
+          }));
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -100,7 +106,7 @@ const Login = () => {
         </h1>
         {!isSignIn && (
           <input
-            ref={name} // Added ref to connect with name.current.value
+            ref={name}
             type="text"
             placeholder="UserName"
             className="p-4 my-4 w-full bg-gray-700 rounded-lg"
@@ -128,7 +134,7 @@ const Login = () => {
         <p className="py-4 cursor-pointer" onClick={toggleSigIn}>
           {isSignIn
             ? "New to Netflix ? Sign Up now "
-            : "Alredy registered? Sign In Now"}
+            : "Already registered? Sign In Now"}
         </p>
       </form>
     </div>
