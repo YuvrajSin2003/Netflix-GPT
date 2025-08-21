@@ -1,4 +1,4 @@
-import Login from "./Login";
+import Login from "./Login"
 import Browser from "./Browser";
 import { createBrowserRouter, useNavigate } from "react-router-dom";
 import { RouterProvider } from "react-router-dom";

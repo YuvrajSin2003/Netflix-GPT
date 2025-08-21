@@ -1,12 +1,11 @@
-import React from 'react'
 import {signOut} from 'firebase/auth'
-import {auth} from './utils/firebase'
+import {auth} from '../utils/firebase'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useEffect } from 'react'
-import { addUser , removeUser } from './utils/userSlice'
-import { LOGO } from './utils/constant'
+import { addUser , removeUser } from '../utils/userSlice'
+import { LOGO } from '../utils/constant'
 
 
 const Header = () => {
