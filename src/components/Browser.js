@@ -1,10 +1,11 @@
 import Headers from "./Header"
-import useNowPlayingMovies from "../hooks/useNowPlayingMovies"; 
+import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
 
 import SecondaryContainer from "./SecondaryContainer";
 import MainContainer from "./MainContainer";
 import usePopularMovies from "../hooks/useNowPopularMovies";
 import useNowTrending from "../hooks/useNowTrending";
+import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import GptSearch from "./GptSearch";
 import { useSelector } from "react-redux";
 const Browser = () => {
@@ -13,6 +14,7 @@ const Browser = () => {
   useNowPlayingMovies();
   usePopularMovies();
   useNowTrending();
+  useUpcomingMovies();
   
 
   return (
